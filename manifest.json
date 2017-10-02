@@ -1,0 +1,6 @@
+{
+  "name": "intercambio",
+  "short_name": "intercambio",
+  "start_url": "/",
+  "display": "standalone"
+}

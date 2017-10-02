@@ -1,0 +1,32 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="intercambio-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class IntercambioApp extends Polymer.Element {
+      static get is() { return 'intercambio-app'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'intercambio-app'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(IntercambioApp.is, IntercambioApp);
+  </script>
+</dom-module>
