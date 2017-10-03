@@ -103,82 +103,99 @@
                 let arrLessUsed = [];
                 let lessMoneyUsed = 0;
                 let ban = false;
+                let cont = 0;
+                let cont2 = 0;
 
                 for (let i = 1; i <= amount; i++) {
-                    console.log("amount value: " + i);
+                    lessMoneyUsed = amount;
+                    //if(i=7)
+                    console.log("another one" + i);
                     for (let j = 0; j < array.length && !ban; j++) {
-                        lessMoneyUsed = amount;
-
+                        cont2 = 1;
                         total = (parseInt(array[j])) - i;
-                        console.log(total + " total 1");
-                        if (total == 0 && total < lessMoneyUsed) {
-                            lessMoneyUsed = j + 1;
-                            console.log("step 1");
-                            ban = true;
-                            break;
+
+                        if (total == 0 && cont2 < lessMoneyUsed) {
+                            lessMoneyUsed = cont2;
                         }
                         if (total > 0) {
-                            console.log("step 2");
-                            lessMoneyUsed = (j + 1) + this.findOptimalChange(total, array);
-                            ban = true;
-                            break;
+                            let result = (cont2) + this.findOptimalChange(total, array);
+
+                            console.log("result: "+result,cont2,this.findOptimalChange(total, array));
+                            if (lessMoneyUsed > result)
+                                lessMoneyUsed = result;
                         }
 
+                        console.log("step1 " + total,(parseInt(array[j])),i ,(parseInt(array[j])) - i, cont2, lessMoneyUsed);
                         for (let k = 0; k < array.length; k++) {
-                            total = ((parseInt(array[j])) + (parseInt(array[k]))) - i;
-                            console.log(total + " total 2");
-                            if (total == 0 && total < lessMoneyUsed) {
-                                lessMoneyUsed = ((j + 1) + (k + 1));
+                            if (lessMoneyUsed - 1 == 0) {
                                 ban = true;
-                                console.log("step 3");
                                 break;
+                            }
+                            cont=1;
+                            total = ((parseInt(array[j])) + (parseInt(array[k]))) - i;
+
+                            console.log("step2 " + total,(parseInt(array[j])),(parseInt(array[k])),((parseInt(array[j])) + (parseInt(array[k]))), i, lessMoneyUsed);
+                            if (total == 0 && ((cont2) + (cont)) < lessMoneyUsed) {
+                                console.log("here1");
+                                lessMoneyUsed = ((cont2) + (cont));
                             }
 
                             if (total > 0) {
-                                console.log("step 4");
-                                lessMoneyUsed = (j + 1) + (k + 1) + this.findOptimalChange(total, array);
-                                ban = true;
-
-                                break;
+                                let result = ((cont2) + (cont)) + this.findOptimalChange(total, array);
+                                console.log("here2: "+((cont2) + (cont)),this.findOptimalChange(total, array));
+                                if (lessMoneyUsed > result)
+                                    lessMoneyUsed = result;
                             }
+
                         }
+                        cont = 1;
                     }
+
+                    console.log(lessMoneyUsed);
                     arrLessUsed.push(lessMoneyUsed);
-                    lessMoneyUsed = 0;
+
                     ban = false;
+                    lessMoneyUsed = 0;
                 }
 
                 console.log(" monto " + amount, " monedas " + array);
-                console.log("solutions: " + arrLessUsed + " average: " + "incoming");
+                console.log("solutions: " + arrLessUsed + " average: " + this.average(arrLessUsed,arrLessUsed.length));
             }
 
             findOptimalChange(total, array) {
                 let totalC = 0;
-                let lessMoneyUsed = 0;
+                let lessMoneyUsed = total;
+                let cont=0;
+                let cont2=0;
 
-                for (let i = 0; i < array; i++) {
-                    lessMoneyUsed = total;
-                    console.log((parseInt(array[i])) , total, "resta 1.1");
+                for (let i = 0; i < array.length; i++) {
                     totalC = (parseInt(array[i])) - total;
-                    console.log(totalC + " total 1.1");
-                    if (totalC == 0 && totalC < lessMoneyUsed) {
-                        lessMoneyUsed = (i) + 1;
-                        console.log("step 1.1");
+                    cont2=1;
+
+                    if (totalC == 0 && cont2 < lessMoneyUsed) {
+                        lessMoneyUsed = (cont2);
                     }
 
                     for (let j = 0; j < array.length; j++) {
-                        console.log("value 1: "+ ((parseInt(array[i]))));
-                        console.log("value 2: "+ ((parseInt(array[j]))));
-                        console.log((parseInt(array[i])),(parseInt(array[j])) , total, "resta 1.2");
                         totalC = ((parseInt(array[i])) + (parseInt(array[j]))) - total;
-                        console.log(totalC + " total 1.2");
-                        if (totalC == 0 && totalC < lessMoneyUsed) {
-                            lessMoneyUsed = ((i) + 1) + (j + 1);
-                            console.log("step 1.2");
+                        cont=1;
+                        if (totalC == 0 && ((cont) + (cont2)) < lessMoneyUsed) {
+                            lessMoneyUsed = ((cont) + (cont2));
                         }
                     }
+
                 }
+                console.log("???"+lessMoneyUsed);
                 return lessMoneyUsed;
+            }
+
+            average(array,len){
+                let acum=0;
+
+                for(let i=0;i<len;i++)
+                    acum+=array[i];
+
+                return acum/len;
             }
         }
 
