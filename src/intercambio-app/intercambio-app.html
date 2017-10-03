@@ -1,32 +1,179 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 
 <dom-module id="intercambio-app">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <h2>Hello [[prop1]]!</h2>
-  </template>
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <h2>[[prop1]]!</h2>
 
-  <script>
-    /**
-     * @customElement
-     * @polymer
-     */
-    class IntercambioApp extends Polymer.Element {
-      static get is() { return 'intercambio-app'; }
-      static get properties() {
-        return {
-          prop1: {
-            type: String,
-            value: 'intercambio-app'
-          }
-        };
-      }
-    }
+        <input type="file" id="fileInput" on-change="_file" accept="[[acceptedFile]]">
+    </template>
 
-    window.customElements.define(IntercambioApp.is, IntercambioApp);
-  </script>
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class IntercambioApp extends Polymer.Element {
+            static get is() {
+                return 'intercambio-app';
+            }
+
+            static get properties() {
+                return {
+                    prop1: {
+                        type: String,
+                        value: 'intercambio-app'
+                    },
+                    acceptedFile: {
+                        type: String,
+                        value: '.txt'
+                    }
+                };
+            }
+
+            _file(e) {
+                let file = e.target.files[0];
+                let self = this;
+                let content;
+                if (!file)
+                    return;
+
+                let read = new FileReader();
+
+                read.onload = function(e) {
+                    content = e.target.result;
+                    self._getValues(content);
+                };
+                read.readAsText(file);
+            }
+
+            _getValues(content) {
+                console.log(content);
+
+                let value;
+                let arr = [];
+
+                for (let i = 2; i < content.length; i++) {
+                    value = this.findAnotherNumber(content, i + 1);
+
+                    if (value != i) {
+                        let concat = "";
+
+                        for (let j = i; j <= value; j++)
+                            if (content[j])
+                                concat += content[j];
+                        i = value;
+
+                        arr.push(concat);
+                    }
+                }
+                this.findMoney(arr)
+            }
+
+            findAnotherNumber(array, pos) {
+                if (array[pos] == " " || array.length < pos || array[pos] == '\n') {
+                    return pos - 1;
+                }
+
+                return this.findAnotherNumber(array, pos + 1);
+            }
+
+            findMoney(array) {
+                let money = [];
+                let pit = 0;
+
+                for (let i = 1; i < array.length; i += (parseInt(array[i]) + 3) - 1) {
+                    pit += (parseInt(array[i]) + 2);
+
+                    for (let j = i + 1; j < pit; j++)
+                        money.push(array[j]);
+
+                    this.optimitation(array[i - 1], money);
+
+                    money = [];
+                }
+            }
+
+            optimitation(amount, array) {
+                let total = 0;
+                //let cont = 1;
+                let arrLessUsed = [];
+                let lessMoneyUsed = 0;
+                let ban = false;
+                amount = 2;
+
+                for (let i = 1; i <= amount; i++) {
+                    for (let j = 0; j < array.length; j++) {
+                        if (!ban)
+                            break;
+
+                        if (i == 1)
+                            lessMoneyUsed = i;
+
+                        total = (parseInt(array[i])) - i;
+
+                        if (total == 0 && total < lessMoneyUsed)
+                            lessMoneyUsed = j + 1;
+
+                        if (total > 0) {
+                            lessMoneyUsed = (j + 1) + this.findOptimalChange(total, array);
+                            break;
+                        }
+
+                        for (let k = 0; k < array.length; k++) {
+                            total = ((parseInt(array[j])) + (parseInt(array[k]))) - i;
+
+                            if (total == 0 && total < lessMoneyUsed) {
+                                lessMoneyUsed = ((j + 1) + (k + 1));
+                                ban = true;
+                                break;
+                            }
+
+                            if(total > 0){
+                                lessMoneyUsed = (j+1)+ (k+1)+ this.findOptimalChange(total,array);
+                                ban = true;
+                                break;
+                            }
+
+                        }
+                    }
+                    arrLessUsed.push(lessMoneyUsed);
+                    lessMoneyUsed = 0;
+                    ban = false;
+                }
+
+                console.log(" monto " + amount, " monedas " + array);
+                console.log("solutions: " + arrBestSolution + " average: " + arrLessUsed);
+            }
+
+            findOptimalChange(total, array) {
+                let totalC = 0;
+                let lessMoneyUsed = 0;
+
+                for (let i = 1; i <= total; i++) {
+                    if (i == 1)
+                        lessMoneyUsed = array.length;
+
+                    totalC = (parseInt(array[i])) - total;
+
+                    if (totalC == 0 && totalC < lessMoneyUsed)
+                        lessMoneyUsed = i + 1;
+
+                    for (let j = 0; j < array.length; j++) {
+                        totalC = ((parseInt(array[i])) + (parseInt(array[j]))) - total;
+
+                        if (totalC == 0 && totalC < lessMoneyUsed)
+                            lessMoneyUsed = (i + 1) + (j + 1);
+                    }
+                }
+                return lessMoneyUsed;
+            }
+        }
+
+        window.customElements.define(IntercambioApp.is, IntercambioApp);
+    </script>
 </dom-module>
