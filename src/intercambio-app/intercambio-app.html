@@ -108,7 +108,7 @@
 
                 for (let i = 1; i <= amount; i++) {
                     lessMoneyUsed = amount;
-                    //if(i=7)
+
                     console.log("another one" + i);
                     for (let j = 0; j < array.length && !ban; j++) {
                         cont2 = 1;
@@ -159,7 +159,7 @@
                 }
 
                 console.log(" monto " + amount, " monedas " + array);
-                console.log("solutions: " + arrLessUsed + " average: " + this.average(arrLessUsed,arrLessUsed.length));
+                console.log("solutions: " + arrLessUsed + " average: " + this.average(arrLessUsed)+ " More usage: " + this.usage(arrLessUsed));
             }
 
             findOptimalChange(total, array) {
@@ -189,13 +189,23 @@
                 return lessMoneyUsed;
             }
 
-            average(array,len){
+            average(array){
                 let acum=0;
 
-                for(let i=0;i<len;i++)
+                for(let i=0;i<array.length;i++)
                     acum+=array[i];
 
-                return acum/len;
+                return acum/array.length;
+            }
+            usage(array){
+                let max=0;
+
+                for(let i=0,len=array.length;i<len;i++){
+                    if(max < array[i]){
+                        max = array[i];
+                    }
+                }
+                return max;
             }
         }
 
