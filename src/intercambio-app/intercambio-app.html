@@ -100,45 +100,47 @@
 
             optimitation(amount, array) {
                 let total = 0;
-                //let cont = 1;
                 let arrLessUsed = [];
                 let lessMoneyUsed = 0;
                 let ban = false;
-                amount = 2;
 
                 for (let i = 1; i <= amount; i++) {
-                    for (let j = 0; j < array.length; j++) {
-                        if (!ban)
-                            break;
+                    console.log("amount value: " + i);
+                    for (let j = 0; j < array.length && !ban; j++) {
+                        lessMoneyUsed = amount;
 
-                        if (i == 1)
-                            lessMoneyUsed = i;
-
-                        total = (parseInt(array[i])) - i;
-
-                        if (total == 0 && total < lessMoneyUsed)
+                        total = (parseInt(array[j])) - i;
+                        console.log(total + " total 1");
+                        if (total == 0 && total < lessMoneyUsed) {
                             lessMoneyUsed = j + 1;
-
+                            console.log("step 1");
+                            ban = true;
+                            break;
+                        }
                         if (total > 0) {
+                            console.log("step 2");
                             lessMoneyUsed = (j + 1) + this.findOptimalChange(total, array);
+                            ban = true;
                             break;
                         }
 
                         for (let k = 0; k < array.length; k++) {
                             total = ((parseInt(array[j])) + (parseInt(array[k]))) - i;
-
+                            console.log(total + " total 2");
                             if (total == 0 && total < lessMoneyUsed) {
                                 lessMoneyUsed = ((j + 1) + (k + 1));
                                 ban = true;
+                                console.log("step 3");
                                 break;
                             }
 
-                            if(total > 0){
-                                lessMoneyUsed = (j+1)+ (k+1)+ this.findOptimalChange(total,array);
+                            if (total > 0) {
+                                console.log("step 4");
+                                lessMoneyUsed = (j + 1) + (k + 1) + this.findOptimalChange(total, array);
                                 ban = true;
+
                                 break;
                             }
-
                         }
                     }
                     arrLessUsed.push(lessMoneyUsed);
@@ -147,27 +149,33 @@
                 }
 
                 console.log(" monto " + amount, " monedas " + array);
-                console.log("solutions: " + arrBestSolution + " average: " + arrLessUsed);
+                console.log("solutions: " + arrLessUsed + " average: " + "incoming");
             }
 
             findOptimalChange(total, array) {
                 let totalC = 0;
                 let lessMoneyUsed = 0;
 
-                for (let i = 1; i <= total; i++) {
-                    if (i == 1)
-                        lessMoneyUsed = array.length;
-
+                for (let i = 0; i < array; i++) {
+                    lessMoneyUsed = total;
+                    console.log((parseInt(array[i])) , total, "resta 1.1");
                     totalC = (parseInt(array[i])) - total;
-
-                    if (totalC == 0 && totalC < lessMoneyUsed)
-                        lessMoneyUsed = i + 1;
+                    console.log(totalC + " total 1.1");
+                    if (totalC == 0 && totalC < lessMoneyUsed) {
+                        lessMoneyUsed = (i) + 1;
+                        console.log("step 1.1");
+                    }
 
                     for (let j = 0; j < array.length; j++) {
+                        console.log("value 1: "+ ((parseInt(array[i]))));
+                        console.log("value 2: "+ ((parseInt(array[j]))));
+                        console.log((parseInt(array[i])),(parseInt(array[j])) , total, "resta 1.2");
                         totalC = ((parseInt(array[i])) + (parseInt(array[j]))) - total;
-
-                        if (totalC == 0 && totalC < lessMoneyUsed)
-                            lessMoneyUsed = (i + 1) + (j + 1);
+                        console.log(totalC + " total 1.2");
+                        if (totalC == 0 && totalC < lessMoneyUsed) {
+                            lessMoneyUsed = ((i) + 1) + (j + 1);
+                            console.log("step 1.2");
+                        }
                     }
                 }
                 return lessMoneyUsed;
