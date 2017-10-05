@@ -95,99 +95,235 @@
                     for (let j = i + 1; j < pit; j++)
                         money.push(array[j]);
 
-                    this.optimitation(array[i - 1], money);
+                    this.prerecursiva(array[i - 1], money, array[i]);
 
                     money = [];
                 }
             }
 
-            optimitation(amount, array) {
-                let total = 0;
+            prerecursiva(amount, array, deep) {
+                let result;
+                amount = 100;
+                let lessUsed;
                 let arrLessUsed = [];
-                let lessMoneyUsed = 0;
                 let ban = false;
 
                 for (let i = 1; i <= amount; i++) {
-                    lessMoneyUsed = amount;
+                    lessUsed = amount + 1;
+                    //for (let k = 0; array.length; k++) {
+                   // console.log("title: " + i);
+                    for (let j = 0; j < array.length; j++) {
+                        //if (i == 13)
+                        //    console.log("menos usado: " + lessUsed + " monto a comparar: " + i);
 
-                    for (let j = 0; j < array.length && !ban; j++) {
-                        total = (parseInt(array[j])) - i;
-
-                        if (total == 0)
-                            lessMoneyUsed = 1;
-
-                        if (total > 0) {
-                            let result = 1 + this.findOptimalChange(total, array);
-
-                            if (lessMoneyUsed > result)
-                                lessMoneyUsed = result;
-                        }
-
-                        for (let k = 0; k < array.length; k++) {
-                            if (lessMoneyUsed - 1 == 0) {
-                                ban = true;
-                                break;
-                            }
-
-
-                            total = ((parseInt(array[j])) + (parseInt(array[k]))) - i;
-
-                            if (total == 0)
-                                lessMoneyUsed = 2;
-
-                            if (total > 0) {
-                                let result = 2 + this.findOptimalChange(total, array);
-
-                                if (lessMoneyUsed > result)
-                                    lessMoneyUsed = result;
-                            }
-
-                            if (array[array.length - 1] * 2 < amount)
-                                for (let l = 0; l < array.length; l++) {
-
-                                    total = ((parseInt(array[j])) + (parseInt(array[k]))) + (parseInt(array[l])) - i;
-
-                                    if (total == 0)
-                                        lessMoneyUsed = 3;
-
-                                    if (total > 0) {
-                                        let result = 3 + this.findOptimalChange(total, array);
-
-                                        if (lessMoneyUsed > result)
-                                            lessMoneyUsed = result;
-                                    }
-                                }
+                        result = this.recursiva2(parseInt(array[j]), i, 1, array, 0, deep, 0);
+                        // result = this.recursiva2(parseInt(array[j]), i, cont, array, -1);
+                        // console.log(result);
+                        if (result < lessUsed) {
+                            ban = true;
+                            lessUsed = result;
                         }
                     }
-                    arrLessUsed.push(lessMoneyUsed);
-
-                    ban = false;
-
-                    lessMoneyUsed = 0;
+                    if (ban) {
+                        arrLessUsed.push(lessUsed);
+                        ban = false
+                    }
+                    if (i == 13)
+                    //    console.log("menos modenas usadas: " + lessUsed, " para cantidad: " + i);
+                    // }
+                        result = 0;
                 }
 
+                console.log("resultado: " + arrLessUsed);
                 console.log("average: " + this.average(arrLessUsed) + " More Interchange: " + this.usage(arrLessUsed));
             }
 
-            findOptimalChange(total, array) {
-                let totalC = 0;
-                let lessMoneyUsed = total;
+            recursiva2(value, amount, cont, list, pos, deepMax, deepMin) {
 
-                for (let i = 0; i < array.length; i++) {
-                    totalC = (parseInt(array[i])) - total;
+                let comp1;
+                let comp2 = amount + 1;
+                let comp3 = amount + 1;
+                let comp4;
+                let comp5 = amount + 1;
+                let min;
 
-                    if (totalC == 0)
-                        lessMoneyUsed = 1;
+                comp1 = this.Nrecursiva1(value, amount, cont);
 
-
-                    for (let j = 0; j < array.length; j++) {
-                        totalC = ((parseInt(array[i])) + (parseInt(array[j]))) - total;
-
-                        if (totalC == 0)
-                            lessMoneyUsed = 2;
-                    }
+                for (let i = 0; i < list.length; i++) {
+                    min = this.Nrecursiva2(value + parseInt(list[i]), amount, cont + 1, list, i, deepMax, deepMin + 1);
+                    if (min < comp2)
+                        comp2 = min;
                 }
-                return lessMoneyUsed;
+                min = amount + 1;
+
+                for (let i = 0; i < list.length; i++) {
+                    min = this.Nrecursiva3(value + parseInt(list[i]), amount, cont + 1, list, i,deepMax,deepMin);
+                    if (min < comp3)
+                        comp3 = min;
+                }
+                comp4 = this.recursivaCambio(value, amount, list, deepMax, deepMin);
+
+                for (let i = 0; i < list.length; i++) {
+                    min = this.NrecursivaCambioMayor(value - parseInt(list[i]), amount, cont + 1, list, i, deepMax, deepMin + 1);
+                    if (min < comp5)
+                        comp5 = min;
+                }
+
+
+                if (comp1 == undefined)
+                    comp1 = amount + 1;
+                if (comp2 == undefined)
+                    comp2 = amount + 1;
+                if (comp3 == undefined)
+                    comp3 = amount + 1;
+                if (comp4 == undefined)
+                    comp4 = amount + 1;
+                if (comp5 == undefined)
+                    comp5 = amount + 1;
+
+                if (comp1 < comp2)
+                    if (comp1 < comp3)
+                        if (comp1 < comp4)
+                            return comp1;
+
+                if (comp2 < comp3)
+                    if (comp2 < comp4)
+                        return comp2;
+
+                if (comp3 < comp4)
+                    if (comp3 < comp5)
+                        return comp3;
+                if (comp4 < comp5)
+                    return comp4;
+
+                return comp5;
+            }
+
+            Nrecursiva1(value, amount, cont) {
+                if (value == amount)
+                    return cont;
+            }
+
+            Nrecursiva2(value, amount, cont, list, pos, deepMax, deepMin) {
+                if (deepMin <= deepMax) {
+                    let res;
+                    let min = amount;
+                    if (value == amount)
+                        return cont;
+                    if (value > amount) {
+                        for (let i = 0; i < list.length; i++) {
+                            res = this.NrecursivaCambioMayor(value - parseInt(list[i]), amount, cont + 1, list, i, deepMax, deepMin + 1);
+                            if (res < min)
+                                min = res;
+                        }
+                        return min;
+                    }
+                    return this.Nrecursiva2(value + parseInt(list[pos]), amount, cont + 1, list, pos, deepMax, deepMin + 1);
+                }
+            }
+
+            Nrecursiva3(value, amount, cont, list, pos,deepMax,deepMin) {
+                let other = pos + 1;
+                if (other <= list.length) {
+                    let res;
+                    let min = amount;
+                    if (value == amount)
+                        return cont;
+                    if (value > amount) {
+                        for (let i = 0; i < list.length; i++) {
+                            res = this.NrecursivaCambioMayor(value - parseInt(list[i]), amount, cont + 1, list, i, deepMax, deepMin + 1);
+                            if (res < min)
+                                min = res;
+                        }
+                        return min;
+                    }
+                    return this.Nrecursiva3(value + parseInt(list[other]), amount, cont + 1, list, other);
+                }
+            }
+
+            NrecursivaCambioMayor(value, amount, cont, list, pos, deepMax, deepMin) {
+                if (deepMin <= deepMax) {
+                    if (value == amount)
+                        return cont;
+                    return this.NrecursivaCambioMayor(value - parseInt(list[pos]), amount, cont + 1, list, deepMax, deepMin + 1);
+                }
+            }
+
+            recursivaCambio(value, amount, list, deepMax, deepMin) {
+                let lessUsed = amount;
+                let result;
+
+                for (let i = 0; i < list.length; i++) {
+                    if (parseInt(list[i]) < value)
+                        result = this.NrecursivaCambio(parseInt(list[i]), amount, 1, list, 0, deepMax, deepMin);
+
+                    if (result < lessUsed)
+                        lessUsed = result;
+                }
+
+                return lessUsed;
+            }
+
+            NrecursivaCambio(value, amount, cont, list, pos, deepMax, deepMin) {
+                let comp1;
+                let comp2 = amount + 1;
+                let comp3 = amount + 1;
+                let min;
+
+                comp1 = this.NrecursivaCambio1(value, amount, cont);
+
+                for (let i = 0; i < list.length; i++) {
+                    min = this.NrecursivaCambio2(value + parseInt(list[i]), amount, cont + 1, list, pos, deepMax, deepMin + 1);
+                    if (min < comp2)
+                        comp2 = min;
+                }
+                min = amount + 1;
+
+                for (let i = 0; i < list.length; i++) {
+                    min = this.NrecursivaCambio3(value + parseInt(list[i]), amount, cont + 1, list, i);
+                    if (min < comp3)
+                        comp3 = min;
+                }
+
+                if (comp1 == undefined)
+                    comp1 = amount + 1;
+                if (comp2 == undefined)
+                    comp2 = amount + 1;
+                if (comp3 == undefined)
+                    comp3 = amount + 1;
+
+                if (comp1 < comp2)
+                    if (comp1 < comp3)
+                        return comp1;
+
+                if (comp2 < comp3)
+                    return comp2;
+                return comp3;
+            }
+
+            NrecursivaCambio1(value, amount, cont) {
+                if (value - amount == 0)
+                    return cont;
+            }
+
+            NrecursivaCambio2(value, amount, cont, list, pos, deepMax, deepMin) {
+                if (deepMin <= deepMax) {
+                    if (value - amount == 0)
+                        return cont;
+
+                    return this.NrecursivaCambio2(value + parseInt(list[pos]), amount, cont + 1, list, pos, deepMax, deepMin + 1);
+                }
+            }
+
+            NrecursivaCambio3(value, amount, cont, list, pos) {
+                let other = pos + 1;
+
+                if (other <= list.length) {
+                    if (value - amount == 0)
+                        return cont;
+
+                    return this.NrecursivaCambio3(value + parseInt(list[other]), amount, cont + 1, list, other);
+                }
             }
 
             average(array) {
