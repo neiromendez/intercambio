@@ -110,15 +110,11 @@
 
                 for (let i = 1; i <= amount; i++) {
                     lessUsed = amount + 1;
-                    //for (let k = 0; array.length; k++) {
-                   // console.log("title: " + i);
-                    for (let j = 0; j < array.length; j++) {
-                        //if (i == 13)
-                        //    console.log("menos usado: " + lessUsed + " monto a comparar: " + i);
 
-                        result = this.recursiva2(parseInt(array[j]), i, 1, array, 0, deep, 0);
-                        // result = this.recursiva2(parseInt(array[j]), i, cont, array, -1);
-                        // console.log(result);
+                    // console.log("title: " + i);
+                    for (let j = 0; j < array.length; j++) {
+                        result = this.recursiva2(parseInt(array[j]), i, 1, array, deep, 0);
+
                         if (result < lessUsed) {
                             ban = true;
                             lessUsed = result;
@@ -128,17 +124,14 @@
                         arrLessUsed.push(lessUsed);
                         ban = false
                     }
-                    if (i == 13)
-                    //    console.log("menos modenas usadas: " + lessUsed, " para cantidad: " + i);
-                    // }
-                        result = 0;
+                    result = 0;
                 }
 
                 console.log("resultado: " + arrLessUsed);
                 console.log("average: " + this.average(arrLessUsed) + " More Interchange: " + this.usage(arrLessUsed));
             }
 
-            recursiva2(value, amount, cont, list, pos, deepMax, deepMin) {
+            recursiva2(value, amount, cont, list, deepMax, deepMin) {
 
                 let comp1;
                 let comp2 = amount + 1;
@@ -157,10 +150,14 @@
                 min = amount + 1;
 
                 for (let i = 0; i < list.length; i++) {
-                    min = this.Nrecursiva3(value + parseInt(list[i]), amount, cont + 1, list, i,deepMax,deepMin);
+                    min = this.Nrecursiva3(value + parseInt(list[i]), amount, cont + 1, list, i, deepMax, deepMin);
                     if (min < comp3)
                         comp3 = min;
                 }
+
+                //if(amount == 33)
+                  //  console.log(comp3);
+
                 comp4 = this.recursivaCambio(value, amount, list, deepMax, deepMin);
 
                 for (let i = 0; i < list.length; i++) {
@@ -168,7 +165,6 @@
                     if (min < comp5)
                         comp5 = min;
                 }
-
 
                 if (comp1 == undefined)
                     comp1 = amount + 1;
@@ -193,6 +189,7 @@
                 if (comp3 < comp4)
                     if (comp3 < comp5)
                         return comp3;
+
                 if (comp4 < comp5)
                     return comp4;
 
@@ -222,13 +219,15 @@
                 }
             }
 
-            Nrecursiva3(value, amount, cont, list, pos,deepMax,deepMin) {
+            Nrecursiva3(value, amount, cont, list, pos, deepMax, deepMin) {
                 let other = pos + 1;
                 if (other <= list.length) {
                     let res;
                     let min = amount;
-                    if (value == amount)
-                        return cont;
+                    if (value == amount){
+                       // if(amount == 33)
+                       //     console.log(cont);
+                        return cont;}
                     if (value > amount) {
                         for (let i = 0; i < list.length; i++) {
                             res = this.NrecursivaCambioMayor(value - parseInt(list[i]), amount, cont + 1, list, i, deepMax, deepMin + 1);
@@ -237,7 +236,12 @@
                         }
                         return min;
                     }
-                    return this.Nrecursiva3(value + parseInt(list[other]), amount, cont + 1, list, other);
+                    for (let i = 0; i < list.length; i++) {
+                        res = this.Nrecursiva3(value + parseInt(list[i]), amount, cont + 1, list, i);
+                        if (res < min)
+                            min = res;
+                    }
+                    return min;
                 }
             }
 
